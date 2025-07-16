@@ -6,32 +6,32 @@ env:
   GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
   GO_VERSION: ^1.21
 jobs:
-  build-android-armeabi-v7a:
-    runs-on: ubuntu-22.04
-    env:
-      tag: alpha
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '${{ env.GO_VERSION }}'
-      - uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r26
-          add-to-path: false
-          local-cache: true
-      - name: Build
-        env:
-          VERSION: '1.0.1'
-        run: >
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          go get golang.org/x/mobile/bind
-          gomobile init
-          mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/arm -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
-          cd build
-          mv libclash.aar libclash-armv7a.aar
-          gh release upload $VERSION libclash-armv7a.aar --clobber
-          gh release upload $VERSION libclash-sources.jar --clobber
+#  build-android-armeabi-v7a:
+#    runs-on: ubuntu-22.04
+#    env:
+#      tag: alpha
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-go@v4
+#        with:
+#          go-version: '${{ env.GO_VERSION }}'
+#      - uses: nttld/setup-ndk@v1
+#        with:
+#          ndk-version: r26
+#          add-to-path: false
+#          local-cache: true
+#      - name: Build
+#        env:
+#          VERSION: '1.0.1'
+#        run: >
+#          go install golang.org/x/mobile/cmd/gomobile@latest
+#          go get golang.org/x/mobile/bind
+#          gomobile init
+#          mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/arm -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
+#          cd build
+#          mv libclash.aar libclash-armv7a.aar
+#          gh release upload $VERSION libclash-armv7a.aar --clobber
+#          gh release upload $VERSION libclash-sources.jar --clobber
   build-android-arm64:
     runs-on: ubuntu-22.04
     env:
@@ -50,36 +50,49 @@ jobs:
         env:
           VERSION: '1.0.1'
         run: >
+          1. 安装 gomobile 并初始化
           go install golang.org/x/mobile/cmd/gomobile@latest
           go get golang.org/x/mobile/bind
           gomobile init
-          mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/arm64 -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
-          cd build
-          mv libclash.aar libclash-arm64.aar
-          gh release upload $VERSION libclash-arm64.aar --clobber
 
-  build-android-x86-64:
-    runs-on: ubuntu-22.04
-    env:
-      tag: alpha
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '${{ env.GO_VERSION }}'
-      - uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r26
-          add-to-path: false
-          local-cache: true
-      - name: Build
-        env:
-          VERSION: '1.0.1'
-        run: >
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          go get golang.org/x/mobile/bind
-          gomobile init
-          mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/amd64 -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
-          cd build
-          mv libclash.aar libclash-x86_64.aar
-          gh release upload $VERSION libclash-x86_64.aar --clobber
+          # 2. 构建 Android AAR 文件
+          mkdir -p build && \
+          gomobile bind -trimpath \
+            -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" \
+            -tags="with_gvisor" \
+            -o build/libclash.aar \
+            -target=android/arm64 \
+            -androidapi 29 \
+            -javapkg cn.mapleafgo \
+            github.com/Dreamacro/clash/bind/mobile
+
+          # 3. 重命名并上传到 GitHub Release
+          cd build && \
+          mv libclash.aar libclash-arm64.aar && \
+          gh release upload $VERSION libclash-arm64.aar --clobber
+#
+#  build-android-x86-64:
+#    runs-on: ubuntu-22.04
+#    env:
+#      tag: alpha
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-go@v4
+#        with:
+#          go-version: '${{ env.GO_VERSION }}'
+#      - uses: nttld/setup-ndk@v1
+#        with:
+#          ndk-version: r26
+#          add-to-path: false
+#          local-cache: true
+#      - name: Build
+#        env:
+#          VERSION: '1.0.1'
+#        run: >
+#          go install golang.org/x/mobile/cmd/gomobile@latest
+#          go get golang.org/x/mobile/bind
+#          gomobile init
+#          mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/amd64 -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
+#          cd build
+#          mv libclash.aar libclash-x86_64.aar
+#          gh release upload $VERSION libclash-x86_64.aar --clobber
