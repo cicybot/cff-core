@@ -12,8 +12,7 @@ env:
 jobs:
 
   build-android-armeabi-v7a:
-    runs-on: ubuntu-latest
-    name: build
+    runs-on: ubuntu-22.04
     env:
       tag: alpha
     steps:
@@ -36,5 +35,6 @@ jobs:
           mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/arm -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
           tar -czf libclash-$VERSION-android-armeabi-v7a.tar.gz build && rm -rf build
           echo uploading...
-          gh release upload $env:tag libclash-$VERSION-android-armeabi-v7a.tar.gz --clobber
+          echo $VERSION
+          gh release upload $VERSION libclash-$VERSION-android-armeabi-v7a.tar.gz --clobber
           
