@@ -6,7 +6,6 @@ env:
   GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
   GO_VERSION: ^1.21
 
-
 jobs:
   build-android:
     runs-on: ubuntu-22.04
