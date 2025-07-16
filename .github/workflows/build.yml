@@ -62,6 +62,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd build
-          mv libclash-${{ matrix.target }}.aar ${{ matrix.output_name }}
           gh release upload ${{ env.VERSION }} ${{ matrix.output_name }} --clobber
           gh release upload $VERSION libclash-sources.jar --clobber
