@@ -39,7 +39,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
       - name: Build
         env:
-          VERSION: ${{ needs.get-release.outputs.tag_name }}
+          VERSION: ${{ env.GITHUB_REF_NAME }}
         run: |
           go install src.techknowlogick.com/xgo@latest
           mkdir build && xgo --targets=windows/amd64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.dll ./bind/desktop
@@ -73,7 +73,7 @@ jobs:
           local-cache: true
       - name: Build
         env:
-          VERSION: ${{ needs.get-release.outputs.tag_name }}
+          VERSION: ${{ env.GITHUB_REF_NAME }}
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           go get golang.org/x/mobile/bind
@@ -97,7 +97,7 @@ jobs:
           local-cache: true
       - name: Build
         env:
-          VERSION: ${{ needs.get-release.outputs.tag_name }}
+          VERSION: ${{ env.GITHUB_REF_NAME }}
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           go get golang.org/x/mobile/bind
@@ -121,7 +121,7 @@ jobs:
           local-cache: true
       - name: Build
         env:
-          VERSION: ${{ needs.get-release.outputs.tag_name }}
+          VERSION: ${{ env.GITHUB_REF_NAME }}
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           go get golang.org/x/mobile/bind
@@ -141,7 +141,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
       - name: Build
         env:
-          VERSION: ${{ needs.get-release.outputs.tag_name }}
+          VERSION: ${{ env.GITHUB_REF_NAME }}
         run: |
           go install golang.org/x/mobile/cmd/gomobile@latest
           go get golang.org/x/mobile/bind
