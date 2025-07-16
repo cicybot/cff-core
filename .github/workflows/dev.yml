@@ -10,8 +10,8 @@ env:
   GO_VERSION: "^1.21"
   
 jobs:
-
-  build-android1:
+  build:
+    name: Release pushed tag
     runs-on: ubuntu-latest
     env:
       tag: alpha
