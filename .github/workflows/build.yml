@@ -1,21 +1,34 @@
 name: build
 
 on:
-  workflow_dispatch:
-  release:
-    types: [ published ]
+  push:
+    tags:
+      - v*
+
 env:
+  GH_TOKEN: ${{ github.token }}
   GO_VERSION: "^1.21"
+  
 jobs:
   get-release:
-    runs-on: ubuntu-latest
-    outputs:
-      tag_name: ${{ steps.get-release.outputs.tag_name }}
-      upload_url: ${{ steps.get-release.outputs.upload_url }}
+    name: Release pushed tag
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: thebritican/fetch-latest-release@v2.0.0
-        id: get-release
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        run: |
+          if gh release view "$tag" --repo="${{ github.repository }}" &> /dev/null; then
+            echo "Release $tag already exists."
+          else
+            gh release create "$tag" \
+              --repo="${{ github.repository }}" \
+              --title="${tag}" \
+              --draft \
+              --generate-notes
+            echo "Release $tag created."
+          fi
   build-libs:
     runs-on: ubuntu-latest
     needs: [ get-release ]
@@ -43,12 +56,8 @@ jobs:
 
           mkdir build && xgo --targets=darwin/amd64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.dylib ./bind/desktop
           tar -czf libclash-$VERSION-darwin-amd64.tar.gz build && rm -rf build
-      - name: Upload
-        uses: shogo82148/actions-upload-release-asset@v1
-        with:
-          upload_url: ${{ needs.get-release.outputs.upload_url }}
-          asset_path: ./*tar.gz
-          overwrite: true
+          gh release upload $env:GITHUB_REF_NAME libclash-$VERSION-darwin-amd64.tar.gz --clobber
+   
   build-android-arm64:
     runs-on: ubuntu-latest
     needs: [ get-release ]
@@ -72,12 +81,7 @@ jobs:
           mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/arm64 -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
 
           tar -czf libclash-$VERSION-android-arm64.tar.gz build && rm -rf build
-      - name: Upload
-        uses: shogo82148/actions-upload-release-asset@v1
-        with:
-          upload_url: ${{ needs.get-release.outputs.upload_url }}
-          asset_path: ./*tar.gz
-          overwrite: true
+          gh release upload $env:GITHUB_REF_NAME libclash-$VERSION-android-arm64.tar.gz --clobber
   build-android-amd64:
     runs-on: ubuntu-latest
     needs: [ get-release ]
@@ -101,12 +105,7 @@ jobs:
           mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/amd64 -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
 
           tar -czf libclash-$VERSION-android-amd64.tar.gz build && rm -rf build
-      - name: Upload
-        uses: shogo82148/actions-upload-release-asset@v1
-        with:
-          upload_url: ${{ needs.get-release.outputs.upload_url }}
-          asset_path: ./*tar.gz
-          overwrite: true
+          gh release upload $env:GITHUB_REF_NAME libclash-$VERSION-android-amd64.tar.gz --clobber
   build-android-armeabi-v7a:
     runs-on: ubuntu-latest
     needs: [ get-release ]
@@ -130,12 +129,7 @@ jobs:
           mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/armeabi-v7a -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
 
           tar -czf libclash-$VERSION-android-armeabi-v7a.tar.gz build && rm -rf build
-      - name: Upload
-        uses: shogo82148/actions-upload-release-asset@v1
-        with:
-          upload_url: ${{ needs.get-release.outputs.upload_url }}
-          asset_path: ./*tar.gz
-          overwrite: true
+          gh release upload $env:GITHUB_REF_NAME libclash-$VERSION-android-armeabi-v7a.tar.gz --clobber
           
   build-ios:
     runs-on: macos-latest
@@ -155,9 +149,4 @@ jobs:
           mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s"  -tags="with_gvisor" -o build/libclash.xcframework -target=ios github.com/Dreamacro/clash/bind/mobile
 
           tar -czf libclash-$VERSION-ios.tar.gz build && rm -rf build
-      - name: Upload
-        uses: shogo82148/actions-upload-release-asset@v1
-        with:
-          upload_url: ${{ needs.get-release.outputs.upload_url }}
-          asset_path: ./*tar.gz
-          overwrite: true
+          gh release upload $env:GITHUB_REF_NAME libclash-$VERSION-ios.tar.gz --clobber
