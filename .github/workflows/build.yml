@@ -30,7 +30,7 @@ jobs:
             echo "Release $tag created."
           fi
   build-android-armeabi-v7a:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
