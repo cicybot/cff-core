@@ -8,7 +8,7 @@ on:
 env:
   GH_TOKEN: ${{ github.token }}
   GO_VERSION: "^1.21"
-  
+
 jobs:
   get-release:
     name: Release pushed tag
@@ -53,36 +53,36 @@ jobs:
           tar -czf libclash-$VERSION-android-armeabi-v7a.tar.gz build && rm -rf build
           echo uploading...
           gh release upload $env:GITHUB_REF_NAME libclash-$VERSION-android-armeabi-v7a.tar.gz --clobber
-          
-  # build-libs:
-  #   runs-on: ubuntu-latest
-  #   needs: [ get-release ]
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-go@v4
-  #       with:
-  #         go-version: ${{ env.GO_VERSION }}
-  #     - name: Build
-  #       env:
-  #         VERSION: ${{ env.GITHUB_REF_NAME }}
-  #       run: |
-  #         go install src.techknowlogick.com/xgo@latest
-  #         mkdir build && xgo --targets=windows/amd64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.dll ./bind/desktop
-  #         tar -czf libclash-$VERSION-windows-amd64.tar.gz build && rm -rf build
 
-  #         mkdir build && xgo --targets=linux/amd64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.so ./bind/desktop
-  #         tar -czf libclash-$VERSION-linux-amd64.tar.gz build && rm -rf build
+    # build-libs:
+    #   runs-on: ubuntu-latest
+    #   needs: [ get-release ]
+    #   steps:
+    #     - uses: actions/checkout@v4
+    #     - uses: actions/setup-go@v4
+    #       with:
+    #         go-version: ${{ env.GO_VERSION }}
+    #     - name: Build
+    #       env:
+    #         VERSION: ${{ env.GITHUB_REF_NAME }}
+    #       run: |
+    #         go install src.techknowlogick.com/xgo@latest
+    #         mkdir build && xgo --targets=windows/amd64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.dll ./bind/desktop
+    #         tar -czf libclash-$VERSION-windows-amd64.tar.gz build && rm -rf build
 
-  #         mkdir build && xgo --targets=linux/arm64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.so ./bind/desktop
-  #         tar -czf libclash-$VERSION-linux-arm64.tar.gz build && rm -rf build
+    #         mkdir build && xgo --targets=linux/amd64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.so ./bind/desktop
+    #         tar -czf libclash-$VERSION-linux-amd64.tar.gz build && rm -rf build
 
-  #         mkdir build && xgo --targets=darwin/arm64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.dylib ./bind/desktop
-  #         tar -czf libclash-$VERSION-darwin-arm64.tar.gz build && rm -rf build
+    #         mkdir build && xgo --targets=linux/arm64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.so ./bind/desktop
+    #         tar -czf libclash-$VERSION-linux-arm64.tar.gz build && rm -rf build
 
-  #         mkdir build && xgo --targets=darwin/amd64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.dylib ./bind/desktop
-  #         tar -czf libclash-$VERSION-darwin-amd64.tar.gz build && rm -rf build
-  #         gh release upload $env:GITHUB_REF_NAME libclash-$VERSION-darwin-amd64.tar.gz --clobber
-   
+    #         mkdir build && xgo --targets=darwin/arm64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.dylib ./bind/desktop
+    #         tar -czf libclash-$VERSION-darwin-arm64.tar.gz build && rm -rf build
+
+    #         mkdir build && xgo --targets=darwin/amd64 -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor,with_lwip" -buildmode=c-shared -out=build/libclash.dylib ./bind/desktop
+    #         tar -czf libclash-$VERSION-darwin-amd64.tar.gz build && rm -rf build
+    #         gh release upload $env:GITHUB_REF_NAME libclash-$VERSION-darwin-amd64.tar.gz --clobber
+
   # build-android-arm64:
   #   runs-on: ubuntu-latest
   #   needs: [ get-release ]
