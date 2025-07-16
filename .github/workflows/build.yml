@@ -64,4 +64,5 @@ jobs:
           cd build
           ls
           gh release upload ${{ env.VERSION }} ${{ matrix.output_name }} --clobber
-          gh release upload ${{ env.VERSION }} libclash-${{ matrix.target }}-sources.jar --clobber
+          mv libclash-${{ matrix.target }}-sources.jar libclash-sources.jar
+          gh release upload ${{ env.VERSION }} libclash-sources.jar --clobber
