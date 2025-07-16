@@ -20,7 +20,7 @@ jobs:
           - target: arm64
             output_name: libclash-arm64.aar
             target_name: android/arm64
-          - target: amd64
+          - target: x86_64
             output_name: libclash-x86_64.aar
             target_name: android/amd64
     env:
@@ -65,4 +65,4 @@ jobs:
           cd build
           ls
           gh release upload ${{ env.VERSION }} ${{ matrix.output_name }} --clobber
-          gh release upload $VERSION libclash-sources.jar --clobber
+          gh release upload ${{ env.VERSION }} libclash-${{ matrix.target }}-sources.jar --clobber
