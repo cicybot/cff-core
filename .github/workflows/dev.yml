@@ -10,7 +10,7 @@ env:
   GO_VERSION: "^1.21"
   
 jobs:
-  build-android-armv7a:
+  build-android:
     runs-on: ubuntu-latest
     env:
       tag: alpha
