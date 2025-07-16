@@ -57,7 +57,7 @@ jobs:
           cd build
           mv libclash.aar libclash-arm64.aar
           gh release upload $VERSION libclash-arm64.aar --clobber
-    build-android-amd64:
+    build-android-x86-64:
       runs-on: ubuntu-22.04
       env:
         tag: alpha
