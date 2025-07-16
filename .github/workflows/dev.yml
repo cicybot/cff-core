@@ -10,14 +10,31 @@ env:
   GO_VERSION: "^1.21"
   
 jobs:
-  build:
-    name: Release pushed tag
+
+  build-android-armeabi-v7a:
     runs-on: ubuntu-22.04
     env:
       tag: alpha
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r26
+          add-to-path: false
+          local-cache: true
       - name: Build
         env:
           VERSION: ${{ env.tag }}
         run: |
-          echo ${{ env.VERSION }}
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          go get golang.org/x/mobile/bind
+          gomobile init
+          mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/armeabi-v7a -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
+
+          tar -czf libclash-$VERSION-android-armeabi-v7a.tar.gz build && rm -rf build
+          echo uploading...
+          gh release upload $env:tag libclash-$VERSION-android-armeabi-v7a.tar.gz --clobber
+          
