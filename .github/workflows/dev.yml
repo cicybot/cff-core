@@ -10,25 +10,7 @@ env:
   GO_VERSION: "^1.21"
   
 jobs:
-  get-release:
-    name: Release pushed tag
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Create release
-        env:
-          tag: alpha
-        run: |
-          if gh release view "$tag" --repo="${{ github.repository }}" &> /dev/null; then
-            echo "Release $tag already exists."
-          else
-            gh release create "$tag" \
-              --repo="${{ github.repository }}" \
-              --title="${tag}" \
-              --draft \
-              --generate-notes
-            echo "Release $tag created."
-          fi
-  build-android-armeabi-v7a:
+  build-android-armv7a:
     runs-on: ubuntu-latest
     env:
       tag: alpha
