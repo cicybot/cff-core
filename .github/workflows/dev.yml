@@ -13,6 +13,7 @@ jobs:
 
   build-android-armeabi-v7a:
     runs-on: ubuntu-latest
+    name: build
     env:
       tag: alpha
     steps:
