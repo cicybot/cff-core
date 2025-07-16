@@ -12,7 +12,7 @@ env:
 jobs:
 
   build-android-armeabi-v7a:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       tag: alpha
     steps:
