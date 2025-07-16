@@ -10,6 +10,18 @@ env:
   GO_VERSION: "^1.21"
   
 jobs:
+
+  build-android1:
+    runs-on: ubuntu-latest
+    env:
+      tag: alpha
+    steps:
+      - name: Build
+        env:
+          VERSION: ${{ env.tag }}
+        run: |
+          echo ${{ env.VERSION }}
+
   build-android:
     runs-on: ubuntu-latest
     env:
