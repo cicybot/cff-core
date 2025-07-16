@@ -32,8 +32,7 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@latest
           go get golang.org/x/mobile/bind
           gomobile init
-          mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/armeabi-v7a -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
-
+          mkdir build && gomobile bind -trimpath -ldflags="-X 'github.com/Dreamacro/clash/constant.Version=${VERSION}' -X 'github.com/Dreamacro/clash/constant.BuildTime=$(date)' -w -s" -tags="with_gvisor" -o build/libclash.aar -target=android/arm -androidapi 29 -javapkg cn.mapleafgo github.com/Dreamacro/clash/bind/mobile
           tar -czf libclash-$VERSION-android-armeabi-v7a.tar.gz build && rm -rf build
           echo uploading...
           gh release upload $env:tag libclash-$VERSION-android-armeabi-v7a.tar.gz --clobber
