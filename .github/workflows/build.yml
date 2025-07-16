@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        target: [ arm, arm64, amd64 ]
+        target: [ arm, arm64, x86_64 ]
         include:
           - target: arm
             output_name: libclash-armv7a.aar
